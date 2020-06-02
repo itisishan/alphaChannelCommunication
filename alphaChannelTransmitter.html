@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<body style="background-color:#000000;">
+    <input id="textInput" value ="TEST"/>
+    <input id="textOutput"/>
+
+    <button onClick="convert();">Convert</button>
+    <button onClick="toggleFrequency();">Toggle Frequency</button>
+    <div id="fps" style="color: white">FPS</div>
+
+    <img id="image" src="picture.jpg">
+    <script>
+        var refreshRate = 5;
+        //var refreshRates = [60, 40];
+
+        var bitPeriod = 500;
+
+        var toggle = 1;
+        var brightnessStates = ['0.90', '0.90'];
+        var count = 0;
+
+        var bitArrayIndex = 0
+        preamble = [0,1,0,1,0,1,0,1]
+        message = [0,0,0,1,0,1,1,1,0,1,0,1,1,0,1,0,1,1,1,0,0,0,0,1,0,1,0,1,1,0]
+        bitArray = preamble.concat(message)
+
+        var string;
+
+        const times = [];
+        let fps;
+
+        function toggleFrequency() {
+            changeTranparency();
+            // if (bitArray[bitArrayIndex] == bitArray[(bitArrayIndex + 1) % bitArray.length]) {
+            //     toggle = 0
+            // } else { toggle = 1}
+                
+            toggle = bitArray[bitArrayIndex]
+            bitArrayIndex = (bitArrayIndex + 1) % bitArray.length;
+            console.log(bitArrayIndex, toggle);
+
+            //setTimeout(toggleFrequency, bitPeriod);
+
+        }
+
+        function convert() {
+            var output = document.getElementById("textOutput");
+            var input = document.getElementById("textInput").value;
+            output.value = "";
+            for (var i = 0; i < input.length; i++) {
+                output.value += input[i].charCodeAt(0).toString(2) + " ";
+            }
+        }
+
+        function changeTranparency() {
+            count = (count + 1) % 2;
+            if (toggle == 0) {
+                document.getElementById("image").style.opacity = '1.0';
+            }
+            if(toggle  == 1) {
+                document.getElementById("image").style.opacity = brightnessStates[count];
+            }
+            setTimeout(changeTranparency, 1000/refreshRate);
+
+            // window.requestAnimationFrame(() => {
+            //     const now = performance.now();
+            //     while (times.length > 0 && times[0] <= now - 1000) {
+            //     times.shift();
+            //     }
+            //     times.push(now);
+            //     fps = times.length;
+            //     document.getElementById("fps").innerHTML = fps;
+            // });
+
+
+        }
+
+        setInterval(toggleFrequency, bitPeriod);
+        
+
+    </script>
+</body>
+</html>
+
